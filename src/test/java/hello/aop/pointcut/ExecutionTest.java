@@ -113,4 +113,39 @@ public class ExecutionTest {
         pointcut.setExpression("execution(*hello.aop.member.MemberService.*(..))");
         assertThat(pointcut.matches(MemberServiceImpl.class.getMethod("internal", String.class), MemberServiceImpl.class)).isFalse();
     }
+
+    /**
+     * 파라미터 매핑
+     */
+    @Test
+    void argsMatch() {
+        pointcut.setExpression("execution(* *(String))");
+        assertThat(pointcut.matches(method, MemberServiceImpl.class)).isTrue();
+    }
+
+    @Test
+    void argsMatchNoArgs() {
+        pointcut.setExpression("execution(* *())");
+        assertThat(pointcut.matches(method, MemberServiceImpl.class)).isFalse();
+    }
+
+    @Test
+    void argsMatchStar() {
+        pointcut.setExpression("execution(* *(*))");
+        assertThat(pointcut.matches(method, MemberServiceImpl.class)).isTrue();
+    }
+
+    //숫자와 무관하게 모든 파라미터, 모든 타입 허용
+    @Test
+    void argsMatchAll() {
+        pointcut.setExpression("execution(* *(..))");
+        assertThat(pointcut.matches(method, MemberServiceImpl.class)).isTrue();
+    }
+
+    //String 타입으로 시작, 숫자와 무관하게 모든 파라미터, 모든 타입 허용
+    @Test
+    void argsMatchComplex() {
+        pointcut.setExpression("execution(* *(String, ..))");
+        assertThat(pointcut.matches(method, MemberServiceImpl.class)).isTrue();
+    }
 }
